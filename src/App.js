@@ -20,8 +20,8 @@ class App extends React.Component {
     const country = e.target.elements.country.value;
     const api_call = await fetch(`http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}&units=metric`);
     const data = await api_call.json();
-    console.log(data);
-    this.setState({
+    if (city && country) {
+      this.setState({
       temperature: data.main.temp,
       city: data.name,
       country: data.sys.country,
@@ -29,21 +29,44 @@ class App extends React.Component {
       description: data.weather[0].description,
       error: ''
     });
+  } else {
+    this.setState({
+      temperature: undefined,
+      city: undefined,
+      country: undefined,
+      humidity: undefined,
+      description: undefined,
+      error: 'Please enter city and country'
+    })
+  }
   }
   render() { // in the background turns the html into JS using babel
     return (
       <section>
         {/* only use one parent section to put all html in, does not work outside */}
-        <Titles />
-        <Form getWeather={this.getWeather}/>
-        <Weather 
-          temperature={this.state.temperature}
-          city={this.state.city}
-          country={this.state.country}
-          humidity={this.state.humidity}
-          description={this.state.description}
-          error={this.state.error}
-        />
+       <section className='wrapper'>
+         <section className='main'>
+           <section className='container'>
+             <section className='row'>
+               <section className='col-xs-5 title-container'>
+                 <Titles />
+               </section>
+               <section className='col-xs-7 form-container'>
+                 <Form getWeather={this.getWeather}/>
+                 <Weather 
+                   temperature={this.state.temperature}
+                   city={this.state.city}
+                   country={this.state.country}
+                   humidity={this.state.humidity}
+                   description={this.state.description}
+                   error={this.state.error}
+                  />
+               </section>
+             </section>
+           </section>
+         </section>
+       </section>
+
       </section>
     )
   }
